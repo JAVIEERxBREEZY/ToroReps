@@ -1,0 +1,16 @@
+# Dependencias y archivos de compilacion
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Configuracion local
+.env
+.env.*
+!.env.example
+
+# Cliente generado por Prisma
+api/src/generated/prisma/
+
+# Registros
+*.log

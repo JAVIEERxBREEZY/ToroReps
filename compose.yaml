@@ -1,0 +1,23 @@
+# Entorno local de desarrollo de ToroReps.
+name: tororeps
+
+services:
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: tororeps
+      POSTGRES_PASSWORD: tororeps_dev
+      POSTGRES_DB: tororeps
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U tororeps -d tororeps"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  postgres_data:
