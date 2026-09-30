@@ -1,13 +1,23 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "esm"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+model User {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  /// La API debe normalizar el correo antes de guardarlo y buscarlo.
+  emailEncrypted  String   @map("email_encrypted")
+  emailLookupHash String   @unique @map("email_lookup_hash") @db.Char(64)
+  passwordHash    String   @map("password_hash")
+  displayName     String   @map("display_name")
+  timezone        String   @default("UTC")
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("users")
 }
