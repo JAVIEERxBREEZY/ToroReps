@@ -10,7 +10,6 @@ datasource db {
 
 model User {
   id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  /// La API debe normalizar el correo antes de guardarlo y buscarlo.
   emailEncrypted  String   @map("email_encrypted")
   emailLookupHash String   @unique @map("email_lookup_hash") @db.Char(64)
   passwordHash    String   @map("password_hash")
