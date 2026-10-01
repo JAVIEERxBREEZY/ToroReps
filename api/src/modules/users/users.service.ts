@@ -2,13 +2,13 @@ import { ConflictException, Injectable } from '@nestjs/common';
 
 import { Prisma, UserRole } from '../../generated/prisma/client.js';
 import { PrismaService } from '../../infrastructure/prisma/prisma.service.js';
-import type { UserSummary } from './models/types/user-summary.type.js';
+import type { UserSummary, UserWithCredentials } from './models/types/user.types.js';
 import { CreateUserInput } from './models/interfaces/create-user-input.interface.js';
 
 @Injectable()
 export class UsersService {
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async create(input: CreateUserInput): Promise<UserSummary> {
     try {
@@ -40,6 +40,24 @@ export class UsersService {
 
       throw error;
     }
+  }
+
+  findForAuthentication(
+    emailLookupHash: string,
+  ): Promise<UserWithCredentials | null> {
+    return this.prisma.user.findUnique({
+      where: {
+        emailLookupHash
+      },
+      select: {
+        id: true,
+        displayName: true,
+        role: true,
+        timezone: true,
+        createdAt: true,
+        passwordHash: true
+      }
+    });
   }
 
 }

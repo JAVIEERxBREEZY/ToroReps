@@ -16,15 +16,30 @@ enum UserRole {
 }
 
 model User {
-  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  emailEncrypted  String   @map("email_encrypted")
-  emailLookupHash String   @unique @map("email_lookup_hash") @db.Char(64)
-  passwordHash    String   @map("password_hash")
-  displayName     String   @map("display_name")
-  timezone        String   @default("UTC")
-  role            UserRole @default(USER)
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  emailEncrypted  String        @map("email_encrypted")
+  emailLookupHash String        @unique @map("email_lookup_hash") @db.Char(64)
+  passwordHash    String        @map("password_hash")
+  displayName     String        @map("display_name")
+  timezone        String        @default("UTC")
+  role            UserRole      @default(USER)
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  sessions        AuthSession[]
 
   @@map("users")
+}
+
+model AuthSession {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tokenHash String   @unique @map("token_hash") @db.Char(64)
+  userId    String   @map("user_id") @db.Uuid
+  expiresAt DateTime @map("expires_at") @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("auth_sessions")
 }
