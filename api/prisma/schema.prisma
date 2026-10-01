@@ -8,6 +8,13 @@ datasource db {
   provider = "postgresql"
 }
 
+enum UserRole {
+  USER
+  ADMIN
+
+  @@map("user_role")
+}
+
 model User {
   id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   emailEncrypted  String   @map("email_encrypted")
@@ -15,6 +22,7 @@ model User {
   passwordHash    String   @map("password_hash")
   displayName     String   @map("display_name")
   timezone        String   @default("UTC")
+  role            UserRole @default(USER)
   createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt       DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
 
