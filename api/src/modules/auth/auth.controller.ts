@@ -1,6 +1,7 @@
-import { Body, Controller, Header, Post, Cookies, Get, HttpCode, HttpStatus, Res } from '@nestjs/common';
+import { Body, Controller, Header, Post, Cookies, Get, HttpCode, HttpStatus, Res, UseGuards } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
+import { minutes, Throttle, ThrottlerGuard } from '@nestjs/throttler';
 
 import type { UserSummary } from '../users/models/types/user.types.js';
 import { AuthService } from './services/auth.service.js';
@@ -21,6 +22,8 @@ export class AuthController {
 
 
   @Public()
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ default: { ttl: minutes(15), limit: 3, blockDuration: minutes(15) } })
   @Post('register')
   @Header('Cache-Control', 'no-store')
   register(@Body() input: RegisterDto): Promise<UserSummary> {
@@ -28,6 +31,7 @@ export class AuthController {
   }
 
   @Public()
+  @UseGuards(ThrottlerGuard)
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @Header('Cache-Control', 'no-store')
