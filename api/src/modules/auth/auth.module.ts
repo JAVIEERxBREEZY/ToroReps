@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
+
+import { SessionAuthGuard } from './guards/session-auth.guard.js';
 import { CryptographyModule } from '../../infrastructure/cryptography/cryptography.module.js';
 import { UsersModule } from '../users/users.module.js';
 import { AuthController } from './auth.controller.js';
@@ -12,12 +15,16 @@ import { AuthSessionService } from './services/auth-session.service.js';
     PrismaModule, 
     UsersModule,
   ],
-  controllers: [ 
+  controllers: [
     AuthController 
   ],
   providers: [ 
     AuthService,
-    AuthSessionService
+    AuthSessionService,
+    {
+      provide: APP_GUARD,
+      useClass: SessionAuthGuard
+    }
   ]
 })
 export class AuthModule {}

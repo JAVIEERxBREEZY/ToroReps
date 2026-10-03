@@ -7,6 +7,8 @@ import { AuthService } from './services/auth.service.js';
 import { RegisterDto } from './dto/register.dto.js';
 import { LoginDto } from './dto/login.dto.js';
 import { SESSION_COOKIE_NAME, SESSION_TTL_SECONDS } from './models/constants/session.constants.js';
+import { Public } from '../../common/decorators/public.decorator.js';
+import { CurrentUser } from './decorators/current-user.decorator.js';
 
 @Controller('auth')
 export class AuthController {
@@ -18,12 +20,14 @@ export class AuthController {
   ) {}
 
 
+  @Public()
   @Post('register')
   @Header('Cache-Control', 'no-store')
   register(@Body() input: RegisterDto): Promise<UserSummary> {
     return this.auth.register(input);
   }
 
+  @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @Header('Cache-Control', 'no-store')
@@ -52,12 +56,11 @@ export class AuthController {
 
   @Get('me')
   @Header('Cache-Control', 'no-store')
-  getCurrentUser(
-    @Cookies(SESSION_COOKIE_NAME) sessionToken?: string
-  ): Promise<UserSummary> {
-    return this.auth.getCurrentUser(sessionToken);
+  getCurrentUser(@CurrentUser() user: UserSummary): UserSummary {
+    return user;
   }
 
+  @Public()
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
   @Header('Cache-Control', 'no-store')
