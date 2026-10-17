@@ -1,0 +1,144 @@
+@use "sass:map";
+
+// ToroReps — paleta oscura inicial.
+//
+// $palette: valores primitivos, ordenados de claro (100) a oscuro (950).
+// $colors: nombres semánticos para los usos previstos en la interfaz.
+//
+// Contraste comprobado para las combinaciones previstas:
+// - Texto principal, secundario y atenuado sobre los tres fondos: >= 4.5:1.
+// - Texto on-primary / on-secondary sobre sus botones y estados: >= 4.5:1.
+// - Mensajes de estado sobre su fondo semántico: >= 4.5:1.
+// - border-control sobre los tres fondos: >= 3:1.
+//
+// border-subtle es decorativo: no usar como única señal de un control.
+// Los botones pastel usan texto oscuro; el blanco no ofrece contraste suficiente.
+// El anillo de foco está pensado sobre fondos oscuros, separado del botón
+// mediante outline-offset. No comunicar estados únicamente mediante el color.
+//
+// Los contrastes corresponden a colores opacos y a estas combinaciones,
+// no a cualquier mezcla de tonos ni a la accesibilidad global de la app.
+
+$palette: (
+  "neutral": (
+    50: #f4f4f5,
+    100: #e5e9ef,
+    200: #d1d7df,
+    300: #b4becb,
+    400: #94a3b8,
+    500: #788697,
+    600: #626870,
+    700: #34383d,
+    800: #272c33,
+    900: #1c1f23,
+    950: #111315,
+  ),
+  "emerald": (
+    100: #d8f5e9,
+    200: #b2e8d3,
+    300: #8cddbd,
+    400: #6bcfa7,
+    500: #46b88d,
+    600: #2f9872,
+    700: #237859,
+    800: #1c5c45,
+    900: #174b39,
+    950: #0e2c23,
+  ),
+  "blue": (
+    100: #e0efff,
+    200: #bfdfff,
+    300: #99c9ff,
+    400: #7cb8f4,
+    500: #5a9fe8,
+    600: #3a82cd,
+    700: #2d65a5,
+    800: #224c7e,
+    900: #1b3e65,
+    950: #11273f,
+  ),
+  "rose": (
+    400: #f0a0ab,
+    950: #341e25,
+  ),
+  "amber": (
+    400: #f1cc84,
+    950: #302716,
+  ),
+);
+
+$colors: (
+  "background-app": map.get($palette, "neutral", 950),
+  "background-surface": map.get($palette, "neutral", 900),
+  "background-raised": map.get($palette, "neutral", 800),
+  "background-input": map.get($palette, "neutral", 950),
+  "text-primary": map.get($palette, "neutral", 50),
+  "text-secondary": map.get($palette, "neutral", 300),
+  "text-muted": map.get($palette, "neutral", 400),
+  "border-subtle": map.get($palette, "neutral", 700),
+  "border-control": map.get($palette, "neutral", 500),
+  "primary": map.get($palette, "emerald", 400),
+  "primary-hover": map.get($palette, "emerald", 300),
+  "primary-active": map.get($palette, "emerald", 500),
+  "primary-subtle": map.get($palette, "emerald", 950),
+  "on-primary": map.get($palette, "neutral", 950),
+  "secondary": map.get($palette, "blue", 400),
+  "secondary-hover": map.get($palette, "blue", 300),
+  "secondary-active": map.get($palette, "blue", 500),
+  "secondary-subtle": map.get($palette, "blue", 950),
+  "on-secondary": map.get($palette, "neutral", 950),
+  "link": map.get($palette, "blue", 400),
+  "link-hover": map.get($palette, "blue", 300),
+  "focus-ring": map.get($palette, "blue", 300),
+  "success": map.get($palette, "emerald", 400),
+  "success-background": map.get($palette, "emerald", 950),
+  "info": map.get($palette, "blue", 400),
+  "info-background": map.get($palette, "blue", 950),
+  "warning": map.get($palette, "amber", 400),
+  "warning-background": map.get($palette, "amber", 950),
+  "error": map.get($palette, "rose", 400),
+  "error-background": map.get($palette, "rose", 950),
+  "selection-background": map.get($palette, "blue", 900),
+  "selection-text": map.get($palette, "neutral", 50),
+);
+
+// Variables semánticas para acceder a los colores sin consultar el mapa.
+$background-app: map.get($colors, "background-app");
+$background-surface: map.get($colors, "background-surface");
+$background-raised: map.get($colors, "background-raised");
+$background-input: map.get($colors, "background-input");
+
+$text-primary: map.get($colors, "text-primary");
+$text-secondary: map.get($colors, "text-secondary");
+$text-muted: map.get($colors, "text-muted");
+
+$border-subtle: map.get($colors, "border-subtle");
+$border-control: map.get($colors, "border-control");
+
+$primary: map.get($colors, "primary");
+$primary-hover: map.get($colors, "primary-hover");
+$primary-active: map.get($colors, "primary-active");
+$primary-subtle: map.get($colors, "primary-subtle");
+$on-primary: map.get($colors, "on-primary");
+
+$secondary: map.get($colors, "secondary");
+$secondary-hover: map.get($colors, "secondary-hover");
+$secondary-active: map.get($colors, "secondary-active");
+$secondary-subtle: map.get($colors, "secondary-subtle");
+$on-secondary: map.get($colors, "on-secondary");
+
+$link: map.get($colors, "link");
+$link-hover: map.get($colors, "link-hover");
+$focus-ring: map.get($colors, "focus-ring");
+
+$success: map.get($colors, "success");
+$success-background: map.get($colors, "success-background");
+$info: map.get($colors, "info");
+$info-background: map.get($colors, "info-background");
+$warning: map.get($colors, "warning");
+$warning-background: map.get($colors, "warning-background");
+$error: map.get($colors, "error");
+$error-background: map.get($colors, "error-background");
+
+$selection-background: map.get($colors, "selection-background");
+$selection-text: map.get($colors, "selection-text");
