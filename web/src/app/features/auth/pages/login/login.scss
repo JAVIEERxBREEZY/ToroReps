@@ -1,0 +1,126 @@
+@use 'api' as api;
+
+:host {
+  display: grid;
+  min-height: 100svh;
+  place-items: center;
+  box-sizing: border-box;
+  padding: clamp(1rem, 4vw, 1.5rem);
+  background: api.$background-app;
+  color: api.$text-primary;
+}
+
+.#{api.$class-prefix}-login {
+  width: min(100%, 28rem);
+  box-sizing: border-box;
+  padding: clamp(1.25rem, 5vw, 2rem);
+  border: 1px solid api.$border-subtle;
+  border-radius: 1rem;
+  background: api.$background-surface;
+
+  &__logo {
+    display: block;
+    width: min(100%, 10rem);
+    height: auto;
+    margin-inline: auto;
+  }
+
+  &__title {
+    margin-block: 1rem 0.5rem;
+    font-size: 1.8rem;
+    overflow-wrap: anywhere;
+  }
+
+  &__description {
+    margin: 0;
+    color: api.$text-secondary;
+  }
+
+  &__form {
+    margin-top: 1.75rem;
+  }
+
+  &__fields {
+    display: grid;
+    gap: 1rem;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  &__field {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  &__label {
+    font-weight: 600;
+  }
+
+  &__input,
+  &__submit {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border-radius: 0.5rem;
+    font: inherit;
+
+    &:focus-visible {
+      outline: 3px solid api.$focus-ring;
+      outline-offset: 3px;
+    }
+  }
+
+  &__input {
+    min-width: 0;
+    border: 1px solid api.$border-control;
+    background: api.$background-input;
+    color: inherit;
+
+    &[aria-invalid='true'] {
+      border-color: api.$error;
+    }
+  }
+
+  &__submit {
+    border: 0;
+    background: api.$primary;
+    color: api.$on-primary;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background: api.$primary-hover;
+    }
+
+    &:active:not(:disabled) {
+      background: api.$primary-active;
+    }
+
+    &:disabled {
+      opacity: 0.65;
+      cursor: wait;
+    }
+  }
+
+  &__field-errors,
+  &__request-error {
+    color: api.$error;
+    font-size: 0.9rem;
+  }
+
+  &__field-error {
+    margin: 0;
+  }
+
+  &__notice {
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+
+    &--warning {
+      background: api.$warning-background;
+      color: api.$warning;
+    }
+  }
+}

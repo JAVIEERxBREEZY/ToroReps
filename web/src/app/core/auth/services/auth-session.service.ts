@@ -4,6 +4,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
 import type { AuthSessionState } from '../models/types/auth-session-state.type';
+import type { LoginCredentials } from '../models/interfaces/login-credentials.interface';
+
 import { AuthApiService } from './auth-api.service';
 
 @Injectable({ providedIn: 'root' })
@@ -32,6 +34,14 @@ export class AuthSessionService {
     }
 
     return this.restorationRequest;
+  }
+
+  async login(credentials: LoginCredentials) {
+    await this.restorationRequest;
+
+    const user = await firstValueFrom( this.authApi.login(credentials) );
+
+    this.sessionState.set({ status : 'authenticated', user });
   }
 
   private async loadSession(): Promise<void> {
