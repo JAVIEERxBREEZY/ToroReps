@@ -1,0 +1,70 @@
+@if (session.user(); as user) {
+  <div class="toro-main">
+    <header class="toro-main__header">
+      <a
+        class="toro-main__brand"
+        href="#main-content"
+        aria-label="ToroReps: ir al contenido"
+      >
+        <img
+          class="toro-main__logo"
+          src="/assets/images/tororeps-logo-white.png"
+          alt="ToroReps"
+          width="1280"
+          height="1280"
+        />
+      </a>
+
+      <button
+        class="toro-main__logout"
+        type="button"
+        [disabled]="loggingOut()"
+        [attr.aria-busy]="loggingOut()"
+        (click)="onLogout()"
+      >
+        {{ loggingOut() ? 'Cerrando sesión…' : 'Cerrar sesión' }}
+      </button>
+    </header>
+
+    <main
+      id="main-content"
+      class="toro-main__content"
+      tabindex="-1"
+    >
+      <p class="toro-main__eyebrow">Tu espacio de entrenamiento</p>
+
+      <h1 class="toro-main__title">
+        Hola, {{ user.displayName }}.
+      </h1>
+
+      <p class="toro-main__description">
+        Un lugar para cada repetición. Y para lo que viene después.
+      </p>
+
+      @if (errorMessage(); as message) {
+        <p class="toro-main__error" role="alert">
+          {{ message }}
+        </p>
+      }
+
+      <section
+        class="toro-main__empty"
+        aria-labelledby="main-empty-title"
+      >
+        <span class="toro-main__badge">Próximamente</span>
+
+        <h2
+          id="main-empty-title"
+          class="toro-main__empty-title"
+        >
+          Tu entrenamiento empieza aquí
+        </h2>
+
+        <p class="toro-main__empty-description">
+          Aquí encontrarás ejercicios recomendados y novedades
+          de tus entrenamientos.
+        </p>
+      </section>
+    </main>
+  </div>
+}

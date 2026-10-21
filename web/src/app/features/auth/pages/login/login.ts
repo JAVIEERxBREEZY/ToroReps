@@ -1,48 +1,38 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-
-import { email,form, FormField, maxLength, required, submit } from '@angular/forms/signals';
+import { email, form, FormField, maxLength, required, submit } from '@angular/forms/signals';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthSessionService } from '../../../../core/auth/services/auth-session.service';
 import { getLoginErrorMessage } from './login-error-message';
 
 @Component({
-  selector        : 'app-login',
-  imports         : [ FormField ],
+  selector        : 'toro-login',
+  imports         : [FormField],
   templateUrl     : './login.html',
   styleUrl        : './login.scss',
-  changeDetection : ChangeDetectionStrategy.OnPush,
+  changeDetection : ChangeDetectionStrategy.OnPush
 })
 export class Login {
 
+  private readonly router = inject(Router);
+  protected readonly sessionExpired = inject(ActivatedRoute).snapshot.queryParamMap.get('reason') === 'expired';
+
   protected readonly session = inject(AuthSessionService);
 
-  private readonly loginModel = signal({
-    email: '',
-    password: ''
-  });
+  private readonly loginModel = signal({ email: '', password: '' });
 
   protected readonly errorMessage = signal<string | null>(null);
 
   protected readonly loginForm = form(this.loginModel, (fields) => {
-    required(fields.email, {
-      message: 'Introduce tu email.',
-    });
+    required(fields.email, { message: 'Introduce tu email.' });
 
-    email(fields.email, {
-      message: 'Introduce un email válido.',
-    });
+    email(fields.email, { message: 'Introduce un email válido.' });
 
-    maxLength(fields.email, 254, {
-      message: 'El email no puede superar los 254 caracteres.',
-    });
+    maxLength(fields.email, 254, { message: 'El email no puede superar los 254 caracteres.' });
 
-    required(fields.password, {
-      message: 'Introduce tu contraseña.',
-    });
+    required(fields.password, { message: 'Introduce tu contraseña.' });
 
-    maxLength(fields.password, 128, {
-      message: 'La contraseña no puede superar los 128 caracteres.',
-    });
+    maxLength(fields.password, 128, { message: 'La contraseña no puede superar los 128 caracteres.' });
   });
 
   protected async onSubmit(event: Event): Promise<void> {
@@ -58,10 +48,9 @@ export class Login {
       });
 
       if (success) {
-        this.loginModel.set({
-          email: '',
-          password: '',
-        });
+        this.loginModel.set({ email: '', password: '' });
+
+        await this.router.navigateByUrl('/main', { replaceUrl: true });
       }
     } catch (error: unknown) {
       this.errorMessage.set(getLoginErrorMessage(error));

@@ -1,11 +1,6 @@
 <main class="toro-login">
-  <img
-    class="toro-login__logo"
-    src="/assets/images/tororeps-logo-white.png"
-    alt="ToroReps"
-    width="1280"
-    height="1280"
-  />
+  <img class="toro-login__logo" src="/assets/images/tororeps-logo-white.png" alt="ToroReps" width="1280"
+    height="1280" />
 
   @if (session.user(); as user) {
     <h1 class="toro-login__title">Ya estás dentro, {{ user.displayName }}.</h1>
@@ -14,73 +9,62 @@
     <h1 class="toro-login__title">Inicia sesión</h1>
     <p class="toro-login__description">Tu próxima marca empieza aquí.</p>
 
-    @if (session.status() === 'unavailable') {
-      <p class="toro-login__notice toro-login__notice--warning">
-        No hemos podido comprobar tu sesión anterior. Puedes intentar iniciar sesión.
-      </p>
+  @if (sessionExpired) {
+    <p class="toro-login__notice toro-login__notice--warning" role="status">
+      Tu sesión ha caducado. Inicia sesión de nuevo para continuar.
+    </p>
+  }
+
+  @if (session.status() === 'unavailable') {
+    <p class="toro-login__notice toro-login__notice--warning">
+      No hemos podido comprobar tu sesión anterior. Puedes intentar iniciar sesión.
+    </p>
+  }
+
+  <form class="toro-login__form" novalidate (submit)="onSubmit($event)" [attr.aria-busy]="loginForm().submitting()">
+    <fieldset class="toro-login__fields" [disabled]="loginForm().submitting()">
+      <div class="toro-login__field">
+        <label class="toro-login__label" for="login-email">Email</label>
+
+        <input class="toro-login__input" id="login-email" type="email" autocomplete="username" autocapitalize="none"
+          spellcheck="false" [formField]="loginForm.email"
+          [attr.aria-invalid]="loginForm.email().touched() && loginForm.email().invalid()"
+          aria-describedby="login-email-errors" />
+
+        <div id="login-email-errors" class="toro-login__field-errors">
+          @if (loginForm.email().touched()) {
+            @for (error of loginForm.email().errors(); track error.kind) {
+              <p class="toro-login__field-error">{{ error.message }}</p>
+            }
+          }
+        </div>
+      </div>
+
+      <div class="toro-login__field">
+        <label class="toro-login__label" for="login-password">Contraseña</label>
+
+        <input class="toro-login__input" id="login-password" type="password" autocomplete="current-password"
+          [formField]="loginForm.password"
+          [attr.aria-invalid]="loginForm.password().touched() && loginForm.password().invalid()"
+          aria-describedby="login-password-errors" />
+
+        <div id="login-password-errors" class="toro-login__field-errors">
+          @if (loginForm.password().touched()) {
+            @for (error of loginForm.password().errors(); track error.kind) {
+              <p class="toro-login__field-error">{{ error.message }}</p>
+            }
+          }
+        </div>
+      </div>
+
+      <button class="toro-login__submit" type="submit" [disabled]="loginForm().submitting()">
+        {{ loginForm().submitting() ? 'Entrando…' : 'Entrar' }}
+      </button>
+    </fieldset>
+
+    @if (errorMessage(); as message) {
+      <p class="toro-login__request-error" role="alert">{{ message }}</p>
     }
-
-    <form
-      class="toro-login__form"
-      novalidate
-      (submit)="onSubmit($event)"
-      [attr.aria-busy]="loginForm().submitting()"
-    >
-      <fieldset class="toro-login__fields" [disabled]="loginForm().submitting()">
-        <div class="toro-login__field">
-          <label class="toro-login__label" for="login-email">Email</label>
-
-          <input
-            class="toro-login__input"
-            id="login-email"
-            type="email"
-            autocomplete="username"
-            autocapitalize="none"
-            spellcheck="false"
-            [formField]="loginForm.email"
-            [attr.aria-invalid]="loginForm.email().touched() && loginForm.email().invalid()"
-            aria-describedby="login-email-errors"
-          />
-
-          <div id="login-email-errors" class="toro-login__field-errors">
-            @if (loginForm.email().touched()) {
-              @for (error of loginForm.email().errors(); track error.kind) {
-                <p class="toro-login__field-error">{{ error.message }}</p>
-              }
-            }
-          </div>
-        </div>
-
-        <div class="toro-login__field">
-          <label class="toro-login__label" for="login-password">Contraseña</label>
-
-          <input
-            class="toro-login__input"
-            id="login-password"
-            type="password"
-            autocomplete="current-password"
-            [formField]="loginForm.password"
-            [attr.aria-invalid]="loginForm.password().touched() && loginForm.password().invalid()"
-            aria-describedby="login-password-errors"
-          />
-
-          <div id="login-password-errors" class="toro-login__field-errors">
-            @if (loginForm.password().touched()) {
-              @for (error of loginForm.password().errors(); track error.kind) {
-                <p class="toro-login__field-error">{{ error.message }}</p>
-              }
-            }
-          </div>
-        </div>
-
-        <button class="toro-login__submit" type="submit" [disabled]="loginForm().submitting()">
-          {{ loginForm().submitting() ? 'Entrando…' : 'Entrar' }}
-        </button>
-      </fieldset>
-
-      @if (errorMessage(); as message) {
-        <p class="toro-login__request-error" role="alert">{{ message }}</p>
-      }
-    </form>
+  </form>
   }
 </main>

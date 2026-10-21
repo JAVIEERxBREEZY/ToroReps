@@ -1,0 +1,131 @@
+@use 'api' as api;
+
+:host {
+  display: block;
+  min-height: 100svh;
+  background: api.$background-app;
+  color: api.$text-primary;
+}
+
+.#{api.$class-prefix}-main {
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 3rem);
+
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 1.25rem;
+    border-bottom: 1px solid api.$border-subtle;
+  }
+
+  &__brand {
+    display: block;
+    border-radius: 0.5rem;
+
+    &:focus-visible {
+      outline: 3px solid api.$focus-ring;
+      outline-offset: 3px;
+    }
+  }
+
+  &__logo {
+    display: block;
+    width: 5rem;
+    height: auto;
+  }
+
+  &__logout {
+    padding: 0.75rem 1rem;
+    border: 1px solid api.$border-control;
+    border-radius: 0.5rem;
+    background: api.$background-surface;
+    color: api.$text-primary;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background: api.$background-raised;
+      border-color: api.$secondary;
+    }
+
+    &:active:not(:disabled) {
+      background: api.$secondary-subtle;
+    }
+
+    &:focus-visible {
+      outline: 3px solid api.$focus-ring;
+      outline-offset: 3px;
+    }
+
+    &:disabled {
+      opacity: 0.65;
+      cursor: wait;
+    }
+  }
+
+  &__content {
+    padding-block: clamp(2rem, 7vw, 5rem);
+  }
+
+  &__eyebrow {
+    margin-block: 0 0.75rem;
+    color: api.$primary;
+    font-weight: 600;
+  }
+
+  &__title {
+    margin-block: 0 1rem;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  &__description {
+    margin: 0;
+    color: api.$text-secondary;
+    line-height: 1.6;
+  }
+
+  &__empty {
+    margin-top: 2.5rem;
+    padding: clamp(1.25rem, 4vw, 2.5rem);
+    border: 1px solid api.$border-subtle;
+    border-radius: 1rem;
+    background: api.$background-surface;
+  }
+
+  &__badge {
+    display: inline-block;
+    padding: 0.35rem 0.65rem;
+    border-radius: 0.4rem;
+    background: api.$secondary-subtle;
+    color: api.$secondary;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  &__empty-title {
+    margin-block: 1.25rem 0.5rem;
+    font-size: clamp(1.25rem, 3vw, 1.6rem);
+  }
+
+  &__empty-description {
+    max-width: 40rem;
+    margin: 0;
+    color: api.$text-secondary;
+    line-height: 1.6;
+  }
+
+  &__error {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: api.$error-background;
+    color: api.$error;
+  }
+}

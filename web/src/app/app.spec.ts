@@ -20,8 +20,10 @@ describe('Login', () => {
           useValue: {
             user: signal(null),
             status: signal('anonymous'),
+            isAuthenticated: signal(false),
+            ensureSession: vi.fn().mockResolvedValue(undefined),
             login,
-          },
+          }
         },
       ],
     }).compileComponents();

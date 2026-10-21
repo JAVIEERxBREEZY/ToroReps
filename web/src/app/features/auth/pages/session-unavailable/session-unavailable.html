@@ -1,0 +1,25 @@
+<main class="toro-session-unavailable">
+  <p class="toro-session-unavailable__brand">ToroReps</p>
+
+  <h1 class="toro-session-unavailable__title">
+    No podemos comprobar tu sesión
+  </h1>
+
+  <p class="toro-session-unavailable__description">
+    La conexión con el servidor no está disponible ahora mismo.
+  </p>
+
+  <p class="toro-session-unavailable__status" role="status">
+    {{ message() }}
+  </p>
+
+  <button
+    class="toro-session-unavailable__retry"
+    type="button"
+    [disabled]="retrying()"
+    [attr.aria-busy]="retrying()"
+    (click)="onRetry()"
+  >
+    {{ retrying() ? 'Comprobando…' : 'Volver a intentar' }}
+  </button>
+</main>
