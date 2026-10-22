@@ -1,0 +1,45 @@
+@use 'sass:math';
+
+@use '../functions/validators' as v;
+
+/// Limita un texto a un número concreto de líneas y aplica truncado visual.
+///
+/// @param {Number} $lines [3] - Entero positivo sin unidad con el máximo de líneas visibles.
+///
+/// @note Requiere compatibilidad con propiedades WebKit para el clamping multilinea.
+///
+/// @example
+///   @include ellipsis-text(2);
+@mixin ellipsis-text($lines: 3) {
+  @if not v.is-number($lines) {
+    @error 'ellipsis-text($lines): $lines debe ser un número entero positivo sin unidad.';
+  }
+
+  @if not math.is-unitless($lines) {
+    @error 'ellipsis-text($lines): $lines no debe tener unidad.';
+  }
+
+  @if not($lines >= 1) or $lines % 1 != 0 {
+    @error 'ellipsis-text($lines): $lines debe ser un número entero positivo.';
+  }
+
+  display: -webkit-box;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $lines;
+}
+
+/// Trunca un texto en una sola línea con puntos suspensivos.
+///
+/// @param {String | Number} $max-width [100%] - Ancho máximo visible del contenido.
+///
+/// @example
+///   @include ellipsis-word(240px);
+@mixin ellipsis-word($max-width: 100%) {
+  max-width: $max-width;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

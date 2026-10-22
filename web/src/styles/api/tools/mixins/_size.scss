@@ -1,0 +1,12 @@
+/// Define ancho y alto del elemento, estableciendo también un alto mínimo.
+///
+/// @param {String | Number} $width [100%] - Ancho del elemento.
+/// @param {String | Number} $height [100%] - Alto y alto mínimo del elemento.
+///
+/// @example
+///   @include set-size(200px, 48px);
+@mixin set-size($width: 100%, $height: 100%) {
+  height: $height;
+  min-height: $height;
+  width: $width;
+}

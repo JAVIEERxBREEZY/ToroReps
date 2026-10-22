@@ -1,0 +1,57 @@
+@use '../../tokens/breakpoints' as bp;
+
+/// Incluye ambos extremos del intervalo indicado.
+@mixin range-mq($min, $max) {
+  @media (min-width: $min) and (max-width: $max) {
+    @content;
+  }
+}
+
+@mixin min-width($width) {
+  @media (min-width: $width) {
+    @content;
+  }
+}
+
+@mixin max-width($width) {
+  @media (max-width: $width) {
+    @content;
+  }
+}
+
+// Los rangos de dispositivo excluyen el máximo para evitar huecos y solapamientos.
+@mixin xs-device {
+  @media (width < bp.$bp-sm) {
+    @content;
+  }
+}
+
+@mixin sm-device {
+  @media (min-width: bp.$bp-sm) and (width < bp.$bp-md) {
+    @content;
+  }
+}
+
+@mixin md-device {
+  @media (min-width: bp.$bp-md) and (width < bp.$bp-lg) {
+    @content;
+  }
+}
+
+@mixin lg-device {
+  @media (min-width: bp.$bp-lg) and (width < bp.$bp-xl) {
+    @content;
+  }
+}
+
+@mixin xl-device {
+  @media (min-width: bp.$bp-xl) and (width < bp.$bp-xxl) {
+    @content;
+  }
+}
+
+@mixin xxl-device {
+  @media (min-width: bp.$bp-xxl) {
+    @content;
+  }
+}

@@ -1,0 +1,18 @@
+$flex-alignment-map : (
+  'between' : space-between,
+  'around'  : space-around,
+  'center'  : center,
+  'end'     : flex-end,
+  'start'   : flex-start
+);
+
+$flex-direction: (
+  "col": column,
+  "colrev": column-reverse,
+  "row": row,
+  "rowrev": row-reverse
+);
+
+$flex-wrap : (
+  "wrap" : wrap
+);

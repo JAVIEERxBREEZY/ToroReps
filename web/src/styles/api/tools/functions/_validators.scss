@@ -1,0 +1,17 @@
+@use 'sass:meta';
+
+@function is-type($value, $type) {
+  @return meta.type-of($value) == $type;
+}
+
+@function is-number($value) {
+  @return is-type($value, 'number');
+}
+
+@function is-color($value) {
+  @return is-type($value, 'color');
+}
+
+@function is-string($value) {
+  @return is-type($value, 'string');
+}

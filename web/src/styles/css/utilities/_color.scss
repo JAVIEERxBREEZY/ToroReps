@@ -1,0 +1,4 @@
+@use 'api' as api;
+
+@include api.generate-simple-utility(api.$colors, 'color', 'color');
+@include api.generate-simple-utility(api.$colors, 'background-color', 'bg');

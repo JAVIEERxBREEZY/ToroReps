@@ -1,0 +1,215 @@
+@use '../functions' as f;
+
+
+/// Genera clases utilitarias simples a partir de un mapa clave-valor.
+///
+/// Cada entrada del mapa genera una clase con el formato `.u-<label>-<key>`,
+/// asignando una única propiedad CSS con su valor correspondiente.
+///
+/// @param {Map} $map - Mapa con las claves y valores a transformar en utilidades.
+/// @param {String} $property - Propiedad CSS que se aplicará en cada clase generada.
+/// @param {String} $label - Prefijo identificador que formará parte del nombre de la utilidad.
+///
+/// @example
+///   $displays: (
+///     none: none,
+///     block: block,
+///     flex: flex
+///   );
+///
+///   @include generate-simple-utility($displays, 'display', 'd');
+///
+///    Resultado:
+///    .u-d-none { display: none; }
+///    .u-d-block { display: block; }
+///    .u-d-flex { display: flex; }
+@mixin generate-simple-utility($map, $property, $label) {
+    @if not f.is-type($map, 'map') {
+        @error 'generate-simple-utility($map, $property, $label): $map debe ser un mapa.';
+    }
+
+    @if not f.is-string($property) {
+        @error 'generate-simple-utility($map, $property, $label): $property debe ser un string.';
+    }
+
+    @if not f.is-string($label) {
+        @error 'generate-simple-utility($map, $property, $label): $label debe ser un string.';
+    }
+
+    @each $key, $value in $map {
+        .u-#{$label}-#{$key} {
+            #{$property}: $value !important;
+        }
+    }
+}
+
+/// Genera clases utilitarias a partir de la combinación de dos mapas de valores.
+///
+/// Cada combinación de claves genera una clase con el formato
+/// `.u-<label>-<first-key>-<second-key>`, asignando una propiedad CSS
+/// compuesta por dos valores.
+///
+/// @param {Map} $first-map - Primer mapa de valores que compone la utilidad.
+/// @param {Map} $second-map - Segundo mapa de valores que compone la utilidad.
+/// @param {String} $property - Propiedad CSS que se aplicará en cada clase generada.
+/// @param {String} $label - Prefijo identificador que formará parte del nombre de la utilidad.
+///
+/// @example
+///   $justify-values: (
+///     start: flex-start,
+///     center: center,
+///     end: flex-end
+///   );
+///
+///   $align-values: (
+///     start: flex-start,
+///     center: center,
+///     end: flex-end
+///   );
+///
+///   @include generate-double-value-utility($justify-values, $align-values, 'place-content', 'pc');
+///
+///    Resultado:
+///    .u-pc-start-start { place-content: flex-start flex-start; }
+///    .u-pc-start-center { place-content: flex-start center; }
+///    .u-pc-center-end { place-content: center flex-end; }
+@mixin generate-double-value-utility($first-map, $second-map, $property, $label) {
+    @if not f.is-type($first-map, 'map') {
+        @error 'generate-double-value-utility($first-map, $second-map, $property, $label): $first-map debe ser un mapa.';
+    }
+
+    @if not f.is-type($second-map, 'map') {
+        @error 'generate-double-value-utility($first-map, $second-map, $property, $label): $second-map debe ser un mapa.';
+    }
+
+    @if not f.is-string($property) {
+        @error 'generate-double-value-utility($first-map, $second-map, $property, $label): $property debe ser un string.';
+    }
+
+    @if not f.is-string($label) {
+        @error 'generate-double-value-utility($first-map, $second-map, $property, $label): $label debe ser un string.';
+    }
+
+    @each $first-key, $first-value in $first-map {
+        @each $second-key, $second-value in $second-map {
+            .u-#{$label}-#{$first-key}-#{$second-key} {
+                #{$property}: $first-value $second-value;
+            }
+        }
+    }
+}
+
+/// Genera clases utilitarias que aplican el mismo valor a dos propiedades CSS.
+///
+/// Cada entrada del mapa genera una clase con el formato `.u-<label>-<key>`,
+/// asignando el mismo valor a dos propiedades distintas dentro de la misma utilidad.
+///
+/// Este patrón es útil para utilidades agrupadas, como márgenes o paddings
+/// horizontales y verticales.
+///
+/// @param {Map} $map - Mapa con las claves y valores a transformar en utilidades.
+/// @param {String} $first-property - Primera propiedad CSS que se aplicará.
+/// @param {String} $second-property - Segunda propiedad CSS que se aplicará.
+/// @param {String} $label - Prefijo identificador que formará parte del nombre de la utilidad.
+///
+/// @example
+///   $spacing-values: (
+///     0: 0,
+///     2: 0.5rem,
+///     4: 1rem
+///   );
+///
+///   @include generate-double-property-utility(
+///     $spacing-values,
+///     'padding-left',
+///     'padding-right',
+///     'px'
+///   );
+///
+///    Resultado:
+///    .u-px-0 { padding-left: 0; padding-right: 0; }
+///    .u-px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+///    .u-px-4 { padding-left: 1rem; padding-right: 1rem; }
+@mixin generate-double-property-utility($map, $first-property, $second-property, $label) {
+    @if not f.is-type($map, 'map') {
+        @error 'generate-double-property-utility($map, $first-property, $second-property, $label): $map debe ser un mapa.';
+    }
+
+    @if not f.is-string($first-property) {
+        @error 'generate-double-property-utility($map, $first-property, $second-property, $label): $first-property debe ser un string.';
+    }
+
+    @if not f.is-string($second-property) {
+        @error 'generate-double-property-utility($map, $first-property, $second-property, $label): $second-property debe ser un string.';
+    }
+
+    @if not f.is-string($label) {
+        @error 'generate-double-property-utility($map, $first-property, $second-property, $label): $label debe ser un string.';
+    }
+
+    @each $key, $value in $map {
+        .u-#{$label}-#{$key} {
+            #{$first-property}: $value !important;
+            #{$second-property}: $value !important;
+        }
+    }
+}
+
+/// Genera clases utilitarias a partir de un mapa de valores y un mapa de medidas.
+///
+/// Cada combinación genera una clase con el formato `.u-<label>-<measure-key>-<value-key>`,
+/// asignando una misma propiedad CSS con un valor dinámico compuesto por la unión
+/// del valor base y la medida correspondiente.
+///
+/// Este patrón es útil para propiedades que comparten comportamiento pero requieren
+/// distintas unidades, como porcentajes, píxeles, rem o viewport units.
+///
+/// @param {Map} $map - Mapa de valores base que se combinarán con las medidas.
+/// @param {Map} $measures - Mapa de medidas o unidades que se aplicarán a cada valor.
+/// @param {String} $property - Propiedad CSS que se aplicará en cada clase generada.
+/// @param {String} $label - Prefijo identificador que formará parte del nombre de la utilidad.
+///
+/// @example
+///   $sizes: (
+///     25: 25,
+///     50: 50,
+///     100: 100
+///   );
+///
+///   $measures: (
+///     per: '%',
+///     px: px,
+///     vh: vh
+///   );
+///
+///   @include generate-dynamic-property-utility($sizes, $measures, 'height', 'height');
+///
+///   Resultado:
+///    .u-height-per-25 { height: 25%; }
+///    .u-height-px-50 { height: 50px; }
+///    .u-height-vh-100 { height: 100vh; }
+@mixin generate-dynamic-property-utility($map, $measures, $property, $label) {
+    @if not f.is-type($map, 'map') {
+        @error 'generate-dynamic-property-utility($map, $measures, $property, $label): $map debe ser un mapa.';
+    }
+
+    @if not f.is-type($measures, 'map') {
+        @error 'generate-dynamic-property-utility($map, $measures, $property, $label): $measures debe ser un mapa.';
+    }
+
+    @if not f.is-string($property) {
+        @error 'generate-dynamic-property-utility($map, $measures, $property, $label): $property debe ser un string.';
+    }
+
+    @if not f.is-string($label) {
+        @error 'generate-dynamic-property-utility($map, $measures, $property, $label): $label debe ser un string.';
+    }
+
+    @each $measure-key, $measure-value in $measures {
+        @each $key, $value in $map {
+            .u-#{$label}-#{$measure-key}-#{$key} {
+                #{$property}: #{$value}#{$measure-value};
+            }
+        }
+    }
+}

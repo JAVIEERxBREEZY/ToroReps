@@ -1,0 +1,50 @@
+@use 'sass:math';
+
+@use 'validators' as v;
+
+/// Acepta píxeles con o sin unidad y una base positiva acorde con la fuente raíz.
+@function px-to-rem($px, $base: 16) {
+  @if not v.is-number($px) {
+    @error 'px-to-rem($px, $base): $px debe ser un número.';
+  }
+
+  @if not v.is-number($base) {
+    @error 'px-to-rem($px, $base): $base debe ser un número.';
+  }
+
+  // Normaliza ambos valores para evitar que la operación mezcle unidades px y rem.
+  @if math.unit($px) == 'px' {
+    $px: math.div($px, 1px);
+  }
+
+  @if math.unit($base) == 'px' {
+    $base: math.div($base, 1px);
+  }
+
+  @if not math.is-unitless($px) {
+    @error 'px-to-rem($px, $base): $px debe estar en px o no tener unidad.';
+  }
+
+  @if not math.is-unitless($base) {
+    @error 'px-to-rem($px, $base): $base debe estar en px o no tener unidad.';
+  }
+
+  @if not($base > 0) {
+    @error 'px-to-rem($px, $base): $base debe ser mayor que cero.';
+  }
+
+  @return math.div($px, $base) * 1rem;
+}
+
+/// Convierte una proporción sin unidad: 0.25 produce 25% y 1.5 produce 150%.
+@function to-percent($value) {
+  @if not v.is-number($value) {
+    @error 'to-percent($value): $value debe ser un número.';
+  }
+
+  @if not math.is-unitless($value) {
+    @error 'to-percent($value): $value no debe tener unidad.';
+  }
+
+  @return $value * 100%;
+}

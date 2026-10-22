@@ -1,0 +1,46 @@
+@use 'sass:map';
+
+@use '../tools/functions/converters' as *;
+
+$font-size-map : (
+    "2"  : px-to-rem(2),
+    "4"  : px-to-rem(4),
+    "8"  : px-to-rem(8),
+    "10" : px-to-rem(10),
+    "12" : px-to-rem(12),
+    "14" : px-to-rem(14),
+    "16" : px-to-rem(16),
+    "18" : px-to-rem(18),
+    "20" : px-to-rem(20),
+    "22" : px-to-rem(22),
+    "24" : px-to-rem(24),
+    "28" : px-to-rem(28),
+    "32" : px-to-rem(32),
+);
+
+$fs-2 : map.get($font-size-map, '2');
+$fs-4 : map.get($font-size-map, '4');
+$fs-8 : map.get($font-size-map, '8');
+$fs-10: map.get($font-size-map, '10');
+$fs-12: map.get($font-size-map, '12');
+$fs-14: map.get($font-size-map, '14');
+$fs-16: map.get($font-size-map, '16');
+$fs-18: map.get($font-size-map, '18');
+$fs-20: map.get($font-size-map, '20');
+$fs-22: map.get($font-size-map, '22');
+$fs-24: map.get($font-size-map, '24');
+$fs-28: map.get($font-size-map, '28');
+$fs-32: map.get($font-size-map, '32');
+
+
+$font-weight-map : (
+    '400' : 400,
+    '500' : 500,
+    '600' : 600,
+    '700' : 700
+);
+
+$fw-400: map.get($font-weight-map, '400');
+$fw-500: map.get($font-weight-map, '500');
+$fw-600: map.get($font-weight-map, '600');
+$fw-700: map.get($font-weight-map, '700');

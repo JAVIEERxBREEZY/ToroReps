@@ -1,0 +1,16 @@
+/// Aplica un contenedor flex con configuración rápida de alineación.
+///
+/// @param {String} $justify [center] - Alineación sobre el eje principal.
+/// @param {String} $align [center] - Alineación sobre el eje cruzado.
+/// @param {String} $direction [row] - Dirección de los elementos flex.
+/// @param {String | Number} $gap [0] - Separación entre elementos.
+///
+/// @example
+///   @include flex-display(space-between, center, row, 1rem);
+@mixin flex-display($justify: center, $align: center, $direction: row, $gap: 0) {
+  align-items: $align;
+  display: flex;
+  flex-direction: $direction;
+  gap: $gap;
+  justify-content: $justify;
+}
