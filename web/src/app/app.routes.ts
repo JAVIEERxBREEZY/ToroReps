@@ -15,23 +15,17 @@ export const routes: Routes = [
     canActivate: [guestGuard],
     loadComponent: () => import('./features/auth/pages/login/login').then( module => module.Login ),
   },
-  // {
-  //   path: 'main',
-  //   title: 'Inicio | ToroReps',
-  //   canActivate: [authGuard],
-  //   loadComponent: () =>
-  //     import('./features/main/pages/main/main').then(
-  //       module => module.Main,
-  //     ),
-  // },
-  // {
-  //   path: 'session-unavailable',
-  //   title: 'Conexión | ToroReps',
-  //   loadComponent: () =>
-  //     import(
-  //       './features/auth/pages/session-unavailable/session-unavailable'
-  //     ).then(module => module.SessionUnavailable),
-  // },
+  {
+    path: 'main',
+    title: 'Inicio | ToroReps',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/main/pages/main/main').then( module => module.Main )
+  },
+  {
+    path: 'session-unavailable',
+    title: 'Conexión | ToroReps',
+    loadComponent: () => import('./features/auth/pages/session-unavailable/session-unavailable').then( module => module.SessionUnavailable )
+  },
   {
     path: '**',
     redirectTo: 'main',
