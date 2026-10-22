@@ -43,3 +43,124 @@ model AuthSession {
   @@index([expiresAt])
   @@map("auth_sessions")
 }
+
+enum ExerciseEquipmentType {
+  BODYWEIGHT
+  BARBELL
+  DUMBBELL
+  KETTLEBELL
+  CABLE_MACHINE
+  SELECTORIZED_MACHINE
+  PLATE_LOADED_MACHINE
+  ASSISTED_MACHINE
+  RESISTANCE_BAND
+  OTHER
+
+  @@map("exercise_equipment_type")
+}
+
+enum ExerciseMeasurementMode {
+  REPS
+  DURATION
+
+  @@map("exercise_measurement_mode")
+}
+
+enum ExerciseLoadMode {
+  NONE
+  EXTERNAL_TOTAL
+  PER_HAND
+  ADDED_BODYWEIGHT
+  ASSISTANCE
+
+  @@map("exercise_load_mode")
+}
+
+enum ExerciseMuscleRole {
+  PRIMARY
+  SECONDARY
+
+  @@map("exercise_muscle_role")
+}
+
+enum ExerciseMediaType {
+  IMAGE
+  VIDEO
+
+  @@map("exercise_media_type")
+}
+
+enum CloudinaryDeliveryType {
+  UPLOAD
+  PRIVATE
+  AUTHENTICATED
+
+  @@map("cloudinary_delivery_type")
+}
+
+/// Definición del catálogo compartido; no contiene resultados de entrenamientos.
+model Exercise {
+  id              String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name            String
+  description     String?
+  equipmentType   ExerciseEquipmentType   @map("equipment_type")
+  measurementMode ExerciseMeasurementMode @map("measurement_mode")
+  loadMode        ExerciseLoadMode        @map("load_mode")
+  loadNote        String?                 @map("load_note")
+  archivedAt      DateTime?               @map("archived_at") @db.Timestamptz(3)
+  createdAt       DateTime                @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime                @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  muscles ExerciseMuscle[]
+  media   ExerciseMedia[]
+
+  @@index([archivedAt, name, id])
+  @@map("exercises")
+}
+
+model MuscleGroup {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  exercises ExerciseMuscle[]
+
+  @@map("muscle_groups")
+}
+
+model ExerciseMuscle {
+  exerciseId    String             @map("exercise_id") @db.Uuid
+  muscleGroupId String             @map("muscle_group_id") @db.Uuid
+  role          ExerciseMuscleRole
+
+  exercise    Exercise    @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  muscleGroup MuscleGroup @relation(fields: [muscleGroupId], references: [id], onDelete: Restrict)
+
+  @@id([exerciseId, muscleGroupId])
+  @@index([muscleGroupId, exerciseId])
+  @@map("exercise_muscles")
+}
+
+/// Solo referencias a Cloudinary. Borrar esta fila no elimina el archivo remoto.
+model ExerciseMedia {
+  id                     String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  exerciseId             String                 @map("exercise_id") @db.Uuid
+  type                   ExerciseMediaType
+  cloudinaryCloudName    String                 @map("cloudinary_cloud_name")
+  /// public_id completo del proveedor, con su ruta lógica y sin añadir la extensión.
+  cloudinaryPublicId     String                 @map("cloudinary_public_id")
+  cloudinaryDeliveryType CloudinaryDeliveryType @default(UPLOAD) @map("cloudinary_delivery_type")
+  cloudinaryVersion      BigInt?                @map("cloudinary_version")
+  cloudinaryFormat       String?                @map("cloudinary_format")
+  position               Int
+  altText                String?                @map("alt_text")
+  createdAt              DateTime               @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt              DateTime               @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  exercise Exercise @relation(fields: [exerciseId], references: [id], onDelete: Restrict)
+
+  @@unique([exerciseId, position])
+  @@map("exercise_media")
+}
