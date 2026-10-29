@@ -1,6 +1,6 @@
 # Catálogo de ejercicios propios — base de datos v1
 
-Esta entrega contiene únicamente el esquema Prisma y su migración PostgreSQL. No incorpora servicios, endpoints, datos iniciales, entrenamientos, ejercicios privados, frontend ni integración con Cloudinary.
+Este documento describe el esquema Prisma y su migración PostgreSQL. La API implementada posteriormente se documenta en [EXERCISE-CATALOG.md](../EXERCISE-CATALOG.md). No se han añadido datos iniciales, entrenamientos, ejercicios privados, frontend ni integración remota con Cloudinary.
 
 Se mantienen Prisma 7.10.1, el generador ESM en `api/src/generated/prisma`, UUID generados por PostgreSQL, fechas `timestamptz(3)` y nombres SQL en `snake_case`. La configuración del CLI sigue siendo `api/prisma7.config.ts`.
 
@@ -26,7 +26,7 @@ El nombre de un ejercicio no es único: variantes legítimas pueden compartir no
 - Archivar significa asignar `archivedAt`. Las consultas futuras del listado excluirán los archivados; las consultas históricas por identidad deberán poder recuperarlos. No se añade borrado automático ni se asume que una futura FK permitirá eliminar ejercicios referenciados.
 - La FK desde `ExerciseMedia` usa `RESTRICT`: no se elimina un ejercicio con referencias multimedia sin tratarlas explícitamente. Archivar no altera su galería.
 - La FK desde `ExerciseMuscle` al ejercicio usa `CASCADE` únicamente para sus asociaciones; la FK al grupo muscular usa `RESTRICT` para impedir borrar grupos utilizados. No se eliminan grupos al borrar asociaciones.
-- `(archived_at, name, id)` respalda el listado activo con orden estable por nombre y UUID. El inicio podrá pedir cinco filas con `take: 5`; el listado completo podrá usar límite y paginación. No se crea una tabla de recomendaciones ni un orden personalizado.
+- `(archived_at, name, id)` respalda el listado activo con orden estable por nombre y UUID, límite y paginación. La página principal utiliza `GET /exercises/discover`, que selecciona hasta cinco ejercicios activos aleatoriamente; su selección no usa el orden del listado. No se crea una tabla de recomendaciones ni un orden personalizado.
 - La clave `(exercise_id, muscle_group_id)` impide duplicados y permite leer los músculos de un ejercicio; el índice inverso `(muscle_group_id, exercise_id)` permite filtrar por grupo y comprobar su FK.
 - `(exercise_id, position)` es único en multimedia y sirve para recuperar la galería ordenada. Las posiciones empiezan en cero, pueden tener huecos y se pueden repetir en ejercicios distintos.
 - La migración añade `CHECK` para nombres no vacíos, formato de `slug`, posiciones no negativas, versiones positivas y referencias multimedia sin URL ni rutas absolutas habituales. Prisma 7 no expresa estos `CHECK` en su esquema: deben conservarse en las migraciones SQL. No equivalen a validar que un archivo exista en Cloudinary.
@@ -87,4 +87,4 @@ npm run test:e2e
 
 La revisión de deriva del esquema se puede ejecutar con `npx --no-install prisma migrate diff --from-config-datasource --to-schema prisma/schema.prisma --exit-code --config prisma7.config.ts`; no comprueba los `CHECK` que Prisma no representa, que deben verificarse en PostgreSQL.
 
-La próxima tarea podrá implementar lecturas paginadas y detalle con músculos/galería, carga de grupos y ejercicios mediante escrituras autorizadas para el rol existente `ADMIN`, asociación de referencias Cloudinary desde Postman y archivado. Quedan para esa fase DTO, validación de permisos y datos, servicios, rutas y pruebas HTTP; no hay una integración remota ni credenciales configuradas en esta entrega.
+Las lecturas paginadas, discover, detalle, escrituras de ejercicios para `ADMIN`, asociación de referencias Cloudinary y archivado están documentados en la API del catálogo. Los grupos se consultan con `GET /exercises/options` y deben cargarse antes de asociarlos. No se ha añadido integración remota con Cloudinary ni configuración de credenciales.

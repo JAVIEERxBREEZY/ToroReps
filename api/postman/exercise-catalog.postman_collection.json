@@ -1,0 +1,277 @@
+{
+  "info": {
+    "name": "ToroReps - Catalogo de ejercicios",
+    "description": "Usa el cookie jar de Postman. Todas las rutas del catalogo requieren sesion; las escrituras requieren ADMIN. Adapta los UUID desde /exercises/options y los public_id a los archivos reales del panel de Cloudinary. Los cuerpos con media reemplazan la composicion de la galeria.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "email",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "password",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "exerciseId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "muscleGroupId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "secondaryMuscleGroupId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "cloudName",
+      "value": "replace-with-your-cloud-name",
+      "type": "string"
+    },
+    {
+      "key": "imagePublicId",
+      "value": "exercises/press-banca/front",
+      "type": "string"
+    },
+    {
+      "key": "videoPublicId",
+      "value": "exercises/press-banca/demo",
+      "type": "string"
+    },
+    {
+      "key": "imageMediaId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "videoMediaId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Login - conserva la cookie de sesion",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Comprobar sesion y rol",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/auth/me"
+      }
+    },
+    {
+      "name": "Consultas con sesion",
+      "item": [
+        {
+          "name": "Opciones - copiar UUID reales de los grupos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/exercises/options"
+          }
+        },
+        {
+          "name": "Listado paginado",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/exercises?page=1&limit=20"
+          }
+        },
+        {
+          "name": "Listado con busqueda y filtros",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/exercises?page=1&limit=20&search=press&muscleGroupId={{muscleGroupId}}&equipmentType=BARBELL"
+          }
+        },
+        {
+          "name": "Discover - seleccion aleatoria sin filtros",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/exercises/discover"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Respuesta 200 y array de hasta cinco ejercicios distintos', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const rows = pm.response.json();",
+                  "  pm.expect(rows).to.be.an(\"array\");",
+                  "  pm.expect(rows.length).to.be.at.most(5);",
+                  "  pm.expect(new Set(rows.map(row => row.id)).size).to.equal(rows.length);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Detalle",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/exercises/{{exerciseId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gestion - requiere ADMIN",
+      "item": [
+        {
+          "name": "Crear con imagen y video",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/exercises",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Press de banca con barra\",\n  \"description\": \"Ejemplo para adaptar a tus archivos subidos.\",\n  \"equipmentType\": \"BARBELL\",\n  \"measurementMode\": \"REPS\",\n  \"loadMode\": \"EXTERNAL_TOTAL\",\n  \"loadNote\": \"Carga total, incluida la barra.\",\n  \"muscles\": [\n    {\n      \"muscleGroupId\": \"{{muscleGroupId}}\",\n      \"role\": \"PRIMARY\"\n    },\n    {\n      \"muscleGroupId\": \"{{secondaryMuscleGroupId}}\",\n      \"role\": \"SECONDARY\"\n    }\n  ],\n  \"media\": [\n    {\n      \"type\": \"IMAGE\",\n      \"cloudinaryCloudName\": \"{{cloudName}}\",\n      \"cloudinaryPublicId\": \"{{imagePublicId}}\",\n      \"cloudinaryDeliveryType\": \"UPLOAD\",\n      \"cloudinaryVersion\": null,\n      \"cloudinaryFormat\": \"jpg\",\n      \"position\": 0,\n      \"altText\": \"Posicion inicial\"\n    },\n    {\n      \"type\": \"VIDEO\",\n      \"cloudinaryCloudName\": \"{{cloudName}}\",\n      \"cloudinaryPublicId\": \"{{videoPublicId}}\",\n      \"cloudinaryDeliveryType\": \"UPLOAD\",\n      \"cloudinaryVersion\": null,\n      \"cloudinaryFormat\": \"mp4\",\n      \"position\": 1,\n      \"altText\": \"Demostracion del movimiento\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const exercise = pm.response.json();",
+                  "  pm.collectionVariables.set(\"exerciseId\", exercise.id);",
+                  "  const image = exercise.media.find(media => media.type === \"IMAGE\");",
+                  "  const video = exercise.media.find(media => media.type === \"VIDEO\");",
+                  "  if (image) pm.collectionVariables.set(\"imageMediaId\", image.id);",
+                  "  if (video) pm.collectionVariables.set(\"videoMediaId\", video.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar conservando la galeria",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/exercises/{{exerciseId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Descripcion actualizada; media se omite y se conserva.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Reordenar conservando id multimedia",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/exercises/{{exerciseId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"media\": [\n    {\n      \"id\": \"{{videoMediaId}}\",\n      \"type\": \"VIDEO\",\n      \"cloudinaryCloudName\": \"{{cloudName}}\",\n      \"cloudinaryPublicId\": \"{{videoPublicId}}\",\n      \"cloudinaryDeliveryType\": \"UPLOAD\",\n      \"cloudinaryVersion\": null,\n      \"cloudinaryFormat\": \"mp4\",\n      \"position\": 0,\n      \"altText\": \"Demostracion del movimiento\"\n    },\n    {\n      \"id\": \"{{imageMediaId}}\",\n      \"type\": \"IMAGE\",\n      \"cloudinaryCloudName\": \"{{cloudName}}\",\n      \"cloudinaryPublicId\": \"{{imagePublicId}}\",\n      \"cloudinaryDeliveryType\": \"UPLOAD\",\n      \"cloudinaryVersion\": null,\n      \"cloudinaryFormat\": \"jpg\",\n      \"position\": 1,\n      \"altText\": \"Posicion inicial\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Vaciar la galeria - no borra archivos remotos",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/exercises/{{exerciseId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"media\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Archivar sin borrado fisico",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/exercises/{{exerciseId}}/archive"
+          }
+        }
+      ]
+    }
+  ]
+}
